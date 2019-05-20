@@ -14,17 +14,17 @@ def get_threads(a_list):
     return Threads_list
 
 
-
-
-
 def create_groups(thrL, loaded_var_list, accessOp):
     var_group = {}
     var_thrIDs_filter = filter(lambda t : t[1]== thrL, loaded_var_list.iteritems())
     var_thrIDs_list = list(var_thrIDs_filter)
     Nothr = len(thrL)
     print "\n"+ str(len(var_thrIDs_list))+" variables "+str(accessOp)+" by "+str(Nothr)+" threads. List in below:"
-    print thrL 
-    Group_name = str(accessOp) +"by" + str(Nothr) + "Threads"
+    print thrL
+    if str(accessOp) == "MAIN":
+        Group_name = "Only" + str(accessOp) + "Thread"
+    else:
+        Group_name = str(accessOp) +"by" + str(Nothr) + "Threads"
     # print Group_name
     Var_filter = map(lambda v : v[0], var_thrIDs_list)
     a = {"var_list": list(Var_filter), "G_thrIDs":thrL}
@@ -32,6 +32,7 @@ def create_groups(thrL, loaded_var_list, accessOp):
 
     # print "var_group ", var_group
     return var_group
+
 
 def get_varNames(var_list, op):
     var_names = map(lambda var : var[3], var_list)
@@ -49,15 +50,9 @@ def get_variables(a_list, op_list):
     return vars_list
 
 
-
 def variables_group(var_list, var_names, op):
     # To get variables that are access by threads
-    first_item = []
-    # vars_list = get_variables(origin_list, op)
-    # var_names = get_varNames(vars_list, str(op))
-    #print "vars_list of "+ str(op)+"= ", vars_list
 
-    #print "number of variables with access type of " + str(op) + "= ", len(vars_list)
     threads_op_var = {}
     # Obtain the thread list that accessed each variable
     for n in var_names:
@@ -71,21 +66,11 @@ def variables_group(var_list, var_names, op):
         b = { n:  var_thr_list}
         threads_op_var.update(b)
     # print threads_op_var
+
     # Calculate the SUm of threads for each variables
     var_sumThrs = map(lambda val : len(val), threads_op_var.itervalues())
     print list(var_sumThrs), len(list(var_sumThrs))
     return threads_op_var
-    # Set the groups of variables that are loaded by threads
-    # var_group = {}
-
-    # try:
-       # first_item = threads_op_var.itervalues().next()
-       # print "first_item ", first_item
-       # var_group = create_groups(first_item, threads_op_var, op)
-       # return var_group
-    #except:
-       # print "An exception occurred"
-       # return []
 
 
 def main():
@@ -96,10 +81,18 @@ def main():
   opList = ["STORE", "LOAD", "GETELEMENTPTR"]
   with open('PowerWindowRosace.txt') as csv_file: 
       csv_reader = csv.reader(csv_file, delimiter=',')
-      
+
+      mainThread_filter = filter(lambda  row: row[2] == "FUNCTIONCALL" and row[3] == "main" , csv_reader)
+      mainThread_list = list(mainThread_filter)
+      print mainThread_list
+      mainThreadID = mainThread_list[0][1]
+      exeTimeStamp = mainThread_list[0][0]
+      print "Execution Date", exeTimeStamp
+
       # Create variable Group that all threads accessed
       # get all thread ids
       print "\n ===============ALL==================="
+      csv_file.seek(0,0)
       allThread_list = get_threads(csv_reader) 
       Thread_list = remove_dups(allThread_list)
       print "allThread_list= ", Thread_list
@@ -108,19 +101,29 @@ def main():
       all_var_names = get_varNames(all_variables, "ALL")
       print "All Vriable Names= ",all_var_names
       var_dict = variables_group(all_variables, all_var_names, "ALL")
+      # print "================var_dict=============="
+      # print var_dict
       var_group = create_groups(Thread_list, var_dict, "ALL")
       print "Group of variables accessd by ALL Threads= "
       print var_group
       Var_groups.update(var_group)
 
+      mainThreadID_list = [mainThreadID]
+      print mainThreadID_list
+
+      var_group = create_groups(mainThreadID_list, var_dict, "MAIN")
+      print "Group of variables accessd only by MAIN Threads= "
+      print var_group
+      Var_groups.update(var_group)
+
+
       # print "all_variables= ", all_variables
       # print "Number of variables = ", len(all_variables)
-      csv_file.seek(0,0)
 
       # Create varaible Group based on operations
       for a in opList:
           print "\n ==============="+a+"==================="
-
+          csv_file.seek(0,0)
           vars_list = get_variables(csv_reader, a)
           var_names = get_varNames(vars_list, str(a))
           var_dict = variables_group(vars_list, var_names, str(a))
@@ -130,7 +133,6 @@ def main():
           print var_group
           Var_groups.update(var_group)
           # print Var_load_groups
-          csv_file.seek(0,0)
 
       # print Var_groups
 
