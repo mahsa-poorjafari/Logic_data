@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="col-md-12">
+        <h3>Logical Component Sub Views</h3>
+        <h5>Execution Date {{timestamp}}</h5>
+        <div class="col-md-12 well" id="Logical_data">
+            <h4> Logical Component</h4>
+
+        </div>
+        <div class="col-md-12 well" id="tech_data">
+            <h4>Technical Component</h4>
+            <div class="thread_notation">
+                {% for t in thread_ids %}
+                    {% if 'Main_' in t %}
+                        <span id="main">{{t}} </span>
+                    {% else %}
+                        <span id="thread_{{forloop.counter0}}">{{t}} </span>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

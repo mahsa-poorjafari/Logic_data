@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+{% load bootstrap4 %}
+{% load staticfiles %}
+<html lang="en">
+<head>
+    {# Load CSS and JavaScript #}
+    {% bootstrap_css %}
+    {% bootstrap_javascript jquery='full' %}
+    {# Display django.contrib.messages as Bootstrap alerts #}
+    {% bootstrap_messages %}
+    <link href="{% static 'css/global.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+
+<!--    <script src="{% static 'js/jquery.html-svg-connect.js'%} "></script>-->
+    <script src="{% static 'js/go-debug.js'%} "></script>
+    <script src="{% static 'js/global.js'%} "></script>
+    <meta charset="UTF-8">
+    <title>HomePage</title>
+</head>
+<body onload="init()">
+    <nav class="navbar navbar-expand-lg bg-dark navbar-dark">
+        <a class="navbar-brand" href="http://127.0.0.1:8000">MultiThreaded Visualization</a>
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav">
+              <li class="nav-item active dropdown">
+                <a class="nav-link dropdown-toggle" href="http://127.0.0.1:8000" data-toggle="dropdown">Main Views</a>
+                  <div class="dropdown-menu">
+                      <a class="dropdown-item" href="#">Time Line View</a>
+                      <a class="dropdown-item" href="#">Structure View</a>
+                  </div>
+
+
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="logical_data"  data-toggle="dropdown">Sub Views</a>
+                  <div class="dropdown-menu">
+                      <a class="dropdown-item" href="logical_data">Logical Data</a>
+                      <a class="dropdown-item" href="logical_comp">Logical Component</a>
+                  </div>
+              </li>
+                <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#"  data-toggle="dropdown">Drawing Tests with different JS Libs</a>
+                  <div class="dropdown-menu">
+                      <a class="dropdown-item" href="cy">Cytoscape</a>
+                      <a class="dropdown-item" href="no_canvas">Without Canvas</a>
+                      <a class="dropdown-item" href="draw2d">draw2D</a>
+                      <a class="dropdown-item" href="gojs">Gojs</a>
+                  </div>
+              </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="content container">
+        <div class="row">
+            <div class="col-md-12">
+                <div id="myDiagramDiv" style="width:400px; height:150px; background-color: #DAE4E4;"></div>
+</div>
+        </div>
+    </div>
+
+</body>
+<script>
+    function init() {
+            var $ = go.GraphObject.make;
+            var myDiagram =  $(go.Diagram, "myDiagramDiv",
+                {
+                    "undoManager.isEnabled": true // enable Ctrl-Z to undo and Ctrl-Y to redo
+                });
+
+            // in the model data, each node is represented by a JavaScript object:
+            var nodeDataArray = [
+                { key: "Alpha" },
+                { key: "Beta" },
+                { key: "Gamma" }
+            ];
+            var linkDataArray = [
+                { to: "Alpha", from:"Beta"  },
+                { to: "Gamma", from:"Beta"  }
+
+            ]
+            myDiagram.model = new go.GraphLinksModel(nodeDataArray,linkDataArray);
+        }
+</script>
+</html>

@@ -1,4 +1,6 @@
 import csv
+from operator import is_not
+from functools import partial
 
 
 def remove_dups(a_list):
@@ -76,7 +78,7 @@ def variables_group(var_list, var_names, op):
 def test_fun():
     var_groups = {}
     op_list = ["STORE", "LOAD", "GETELEMENTPTR"]
-    with open('PowerWindowRosace.txt') as csv_file:
+    with open('multithreaded_vis/PowerWindowRosace.txt') as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=',')
 
         main_thread_filter = filter(lambda row: row[2] == "FUNCTIONCALL" and row[3] == "main", csv_reader)
@@ -131,3 +133,34 @@ def test_fun():
             # print Var_load_groups
 
         # print Var_groups
+
+# Get the list of function names
+
+
+def get_function_names():
+    with open('multithreaded_vis/PowerWindowRosace.txt') as csv_file:
+        csv_reader = csv.reader(csv_file, delimiter=',')
+        fun_names = map(lambda row: row[3] if row[2] == "FUNCTIONCALL" else None, csv_reader)
+        fun_names_not_none = filter(partial(is_not, None), fun_names)
+        function_name_list = remove_dups(list(fun_names_not_none))
+    return function_name_list
+
+# Get the list of thread ids
+
+
+def tech_comp():
+    with open('multithreaded_vis/PowerWindowRosace.txt') as csv_file:
+        csv_reader = csv.reader(csv_file, delimiter=',')
+        main_thread_filter = filter(lambda row: row[2] == "FUNCTIONCALL" and row[3] == "main", csv_reader)
+
+        main_thread_list = list(main_thread_filter)
+        exe_timestamp = main_thread_list[0][0]
+        csv_file.seek(0, 0)
+        all_thread_list = get_threads(csv_reader)
+        thread_list = remove_dups(all_thread_list)
+        thread_list[0] = 'Main_' + thread_list[0]
+        # print("all_thread_list  ", thread_list)
+    thread_infos = {'timestamp': exe_timestamp, 'thread_ids': thread_list}
+    # print(thread_infos)
+
+    return thread_infos

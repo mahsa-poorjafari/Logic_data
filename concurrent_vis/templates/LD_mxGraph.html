@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+{% load bootstrap4 %}
+{% load staticfiles %}
+<html lang="en">
+<head>
+    <script type="text/javascript">
+        mxBasePath = "{% static '' %}";
+    </script>
+    {# Load CSS and JavaScript #}
+    {% bootstrap_css %}
+    {% bootstrap_javascript jquery='full' %}
+    {# Display django.contrib.messages as Bootstrap alerts #}
+    {% bootstrap_messages %}
+    <script type="text/javascript" src="{% static 'js/mxClient.js' %}"></script>
+    <link href="{% static 'css/global.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="{% static 'js/global.js'%} "></script>
+    <meta charset="UTF-8">
+    <title>Logical Data with mxGraph</title>
+</head>
+<body onload="main(document.getElementById('graphContainer'))">
+    <nav class="navbar navbar-expand-lg bg-dark navbar-dark">
+        <a class="navbar-brand" href="http://127.0.0.1:8000">Visualization of MultiThreaded Programs</a>
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav">
+              <li class="nav-item active dropdown">
+                <a class="nav-link dropdown-toggle" href="http://127.0.0.1:8000" data-toggle="dropdown">Main Views</a>
+                  <div class="dropdown-menu">
+                      <a class="dropdown-item" href="#">Time Line View</a>
+                      <a class="dropdown-item" href="#">Structure View</a>
+                  </div>
+
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="logical_data"  data-toggle="dropdown">Sub Views</a>
+                  <div class="dropdown-menu">
+                      <a class="dropdown-item" href="logical_data">Logical Data</a>
+                      <a class="dropdown-item" href="ld_mxgraph">Logical Data with mxGraph</a>
+                      <a class="dropdown-item" href="logical_comp">Logical Component</a>
+                  </div>
+              </li>
+                <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#"  data-toggle="dropdown">Drawing Tests with different JS Libs</a>
+                  <div class="dropdown-menu">
+                      <a class="dropdown-item" href="cy">Cytoscape</a>
+                      <a class="dropdown-item" href="no_canvas">Without Canvas</a>
+                      <a class="dropdown-item" href="draw2d">draw2D</a>
+                      <a class="dropdown-item" href="gojs">Gojs</a>
+                      <a class="dropdown-item" href="mxGraph">mxGraph</a>
+                  </div>
+              </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="content col-md-2" style="overflow-wrap: break-word;">
+
+        <div id="dataContainer">
+            <div class="var_notation" >
+                <h4>Shared Variables</h4>
+                <ul id="shared_variables">
+                    {% for k,v in shared_variables.items %}
+                        <lo>{{k}}</lo>
+                            <ol id="{{k}}_child">
+                                {% for i in v %}
+                                    <li>{{i}}</li>
+                                {% endfor %}
+                            </ol>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+    </div>
+    <div class="content col-md-10 well" style="min-height: 500px;">
+        <div class="row">
+            <div class="col-md-12" id="graphContainer" >
+                <h4>Logical Data</h4>
+                <!-- Creates a container for the graph with a grid wallpaper
+                <div id="graphContainer" style="position:relative;overflow:hidden;width:321px;height:241px;background:url('editors/images/grid.gif');cursor:default;">
+                </div>
+                -->
+                <h4>Technical Data</h4>
+            </div>
+        </div>
+    </div>
+
+
+</body>
+<script type="text/javascript">
+    // Program starts here. Creates a sample graph in the
+    // DOM node with the specified ID. This function is invoked
+    // from the onLoad event handler of the document (see below).
+
+    function main(container)
+    {
+        // Checks if the browser is supported
+        if (!mxClient.isBrowserSupported())
+        {
+            // Displays an error message if the browser is not supported.
+            mxUtils.error('Browser is not supported!', 200, false);
+        }
+        else
+        {
+            // Disables the built-in context menu
+            mxEvent.disableContextMenu(container);
+
+            // Creates the graph inside the given container
+            var graph = new mxGraph(container);
+            //graph.setEnabled(false);
+
+
+            graph.getStylesheet().getDefaultEdgeStyle()['edgeStyle'] = 'orthogonalEdgeStyle';
+
+            // Enables rubberband selection
+            new mxRubberband(graph);
+
+            // Disables basic selection and cell handling
+            // configureStylesheet(graph);
+
+            // Gets the default parent for inserting new cells. This
+            // is normally the first child of the root (ie. layer 0).
+            var parent = graph.getDefaultParent();
+
+            // Adds cells to the model in a single step
+            graph.getModel().beginUpdate();
+
+            // var w = 20;
+            // var h = 300;
+            try
+            {
+                // for (let i = 0; i < varList.length; i++) {
+                //     if (i !== 0 && ((i/8)% 1) === 0){
+                //         h += 100;
+                //         w = 20;
+                //     }
+                //     let varId = 'var'+ i;
+                //     graph.insertVertex(parent, null, varList[i].innerHTML, w, h, 100, 80, varId);
+                //     w +=150;
+                // }
+                let varH = 20;
+                let varW = 20;
+                let dtW = 300;
+                let dtH = 1000;
+                let dataTypes = document.getElementById('shared_variables').getElementsByTagName("lo");
+                for (let i = 0; i < dataTypes.length; i++) {
+                    let dtId = 'dT'+ i;
+                    dataTypeStyle(graph, 'dT'+ i);
+                    let dt = graph.insertVertex(parent, null, dataTypes[i].innerHTML, dtW, dtH, 100, 80, dtId);
+                    let dtVarList = document.getElementById(dataTypes[i].innerHTML+'_child').getElementsByTagName("li");
+                    for (let j = 0; j < dtVarList.length; j++) {
+                        if (j !== 0 && ((j/8)% 1) === 0){
+                            varH += 100;
+                            varW = 20;
+                        }
+                        let varId = 'dT'+i+'var'+ j;
+                        sharedVarStyle(graph, varId);
+                        // let edgeColor = '#000000';
+                        // if (i == 0){
+                        //     edgeColor = '#B22222';
+                        // }else if (i==1){edgeColor= '#0000CD'}
+                        let edgeColor = (i==0)? '#B22222' : '#0000CD';
+                        console.log(i);
+                        configEdgeStyle(graph);
+                        let v = graph.insertVertex(parent, null, dtVarList[j].innerHTML, varW, varH, 100, 80, varId);
+                        let e1 = graph.insertEdge(parent, null, '', v, dt, 'dashed=0;'+
+						'endArrow=block;sourcePerimeterSpacing=0;startFill=0;endFill=0;strokeColor='+edgeColor);
+                        varW +=150;
+                        varH += 10;
+                    }
+                    dtW += 300;
+                }
+
+            }
+            finally
+            {
+                // Updates the display
+                graph.getModel().endUpdate();
+            }
+        }
+    };
+    function configureStylesheet(graph) {
+        let style = new Object();
+        style[mxConstants.STYLE_SHAPE] = mxConstants.SHAPE_IMAGE;
+        style[mxConstants.STYLE_PERIMETER] = mxPerimeter.RectanglePerimeter;
+        style[mxConstants.STYLE_STROKECOLOR] = '#000000';
+        style[mxConstants.STYLE_FILLCOLOR] = '#FF6666';
+        style[mxConstants.STYLE_ALIGN] = mxConstants.ALIGN_CENTER;
+        style[mxConstants.STYLE_IMAGE] = '/static/media/LD_bg2.png';
+        graph.getStylesheet().putCellStyle('hello', style);
+
+        let eStyle = graph.getStylesheet().getDefaultEdgeStyle();
+        eStyle['strokeColor'] = '#000000';
+        eStyle['fontColor'] = '#000000';
+        eStyle['fontStyle'] = '0';
+        eStyle['fontStyle'] = '0';
+        eStyle['startSize'] = '8';
+        eStyle['endSize'] = '20';
+    };
+    function sharedVarStyle(graph, varId) {
+        let style = new Object();
+        style[mxConstants.STYLE_SHAPE] = mxConstants.SHAPE_IMAGE;
+        style[mxConstants.STYLE_PERIMETER] = mxPerimeter.RectanglePerimeter;
+        style[mxConstants.STYLE_WHITE_SPACE] = 'wrap';
+        style[mxConstants.STYLE_FONTCOLOR] = '#000000';
+        style[mxConstants.STYLE_STROKECOLOR] = '#000000';
+        style[mxConstants.STYLE_ALIGN] = mxConstants.ALIGN_CENTER;
+        style[mxConstants.STYLE_IMAGE] = '/static/media/TechData.png';
+        graph.getStylesheet().putCellStyle(varId, style);
+    };
+    function dataTypeStyle(graph, dtId) {
+        let style = new Object();
+        style[mxConstants.STYLE_SHAPE] = mxConstants.SHAPE_IMAGE;
+        style[mxConstants.STYLE_PERIMETER] = mxPerimeter.RectanglePerimeter;
+        style[mxConstants.STYLE_WHITE_SPACE] = 'wrap';
+        style[mxConstants.STYLE_FONTCOLOR] = '#000000';
+        style[mxConstants.STYLE_STROKECOLOR] = '#000000';
+        style[mxConstants.STYLE_ALIGN] = mxConstants.ALIGN_CENTER;
+        style[mxConstants.STYLE_IMAGE] = '/static/media/dataType.png';
+        graph.getStylesheet().putCellStyle(dtId, style);
+    };
+    function configEdgeStyle(graph,edgeColor) {
+        let eStyle = graph.getStylesheet().getDefaultEdgeStyle();
+        eStyle['strokeColor'] = edgeColor;
+        eStyle['fontColor'] = '#000000';
+        eStyle['fontStyle'] = '0';
+        eStyle['fontStyle'] = '0';
+        eStyle['startSize'] = '8';
+        eStyle['endSize'] = '20';
+    }
+</script>
+
+</html>

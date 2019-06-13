@@ -1,9 +1,11 @@
 import csv
 from test import *
+import django
 from logical_data_inputs import *
 
 
 def main():
+    print(django.get_version())
 
     # this was the first try
     # test_fun()
