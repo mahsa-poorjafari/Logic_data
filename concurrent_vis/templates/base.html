@@ -9,13 +9,15 @@
     {# Display django.contrib.messages as Bootstrap alerts #}
     {% bootstrap_messages %}
     <link href="{% static 'css/global.css' %}" rel="stylesheet">
+    <link rel="shortcut icon" href="{%  static 'media/favicon.ico' %}">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
 
 <!--    <script src="{% static 'js/jquery.html-svg-connect.js'%} "></script>-->
 
     <script src="{% static 'js/global.js'%} "></script>
+    <script src="https://kit.fontawesome.com/9ac136c88a.js"></script>
     <meta charset="UTF-8">
-    <title>HomePage</title>
+    <title>{% block title %}{% endblock %}</title>
 </head>
 <body>
     {% include "main_menu.html" %}
