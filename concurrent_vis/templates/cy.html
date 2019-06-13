@@ -12,18 +12,7 @@
     <script src="{% static 'js/cytoscape.min.js' %}"></script>
 </head>
 <body>
-<!--<div id="ld" style="z-index: 100;"></div>-->
-<!--<div id="col-md-3" id="logical_data">-->
-<!--    <h4> Logical Data</h4>-->
-<!--        <div class="func_notation">-->
-<!--            <ul id="function_names">-->
-<!--                {% for f in function_names %}-->
-<!--                    <li id="func_{{forloop.counter}}">{{f}}</li>-->
-<!--                {% endfor %}-->
-<!--            </ul>-->
-<!--        </div>-->
-<!--</div>-->
-<!--<hr/>-->
+{% include "main_menu.html" %}
 <div id="cy" style="z-index: 100;"></div>
 <div class="col-md-3 well" id="tech_data">
         <h4>Technical Data</h4>
