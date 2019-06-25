@@ -15,8 +15,7 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
-from django.conf.urls.static import static
-from multithreaded_vis import views
+from multithreaded_vis import views, tests
 
 
 urlpatterns = [
@@ -24,10 +23,12 @@ urlpatterns = [
     url(r'^$', views.index, name='index'),
     url(r'logical_data', views.logical_data, name='logical_data'),
     url(r'logical_comp', views.logical_comp, name='logical_comp'),
-    url(r'cy', views.cy, name='cy'),
-    url(r'draw2d', views.draw2d, name='draw2d'),
-    url(r'no_canvas', views.no_canvas, name='no_canvas'),
-    url(r'gojs', views.gojs, name='gojs'),
-    url(r'mxGraph', views.mxgraph, name='mxGraph'),
-    url(r'ld_mxgraph', views.ld_mxgraph, name='ld_mxgraph'),
+    url(r'cy', tests.cy, name='cy'),
+    url(r'draw2d', tests.draw2d, name='draw2d'),
+    url(r'no_canvas', tests.no_canvas, name='no_canvas'),
+    url(r'gojs', tests.gojs, name='gojs'),
+    url(r'mxGraph', tests.mxgraph, name='mxGraph'),
+    url(r'Logical_Data_L0', views.logical_data_l0, name='ld_mxgraph'),
+    url(r'catastrophe', views.catastrophe, name='catastrophe'),
+    url(r'Logical_Data_L1', views.logical_data_l1, name='Logical_Data_L0'),
 ]

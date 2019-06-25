@@ -52,26 +52,29 @@ def get_variables(a_list, op_list):
     return vars_list
 
 
-def variables_group(var_list, var_names, op):
+def variables_group(var_list, var_names):
     # To get variables that are access by threads
 
     threads_op_var = {}
     # Obtain the thread list that accessed each variable
     for n in var_names:
+
+        print("n=>", n)
         var_rows = filter(lambda row: row[3] == n, var_list)
         var_rows_list = list(var_rows)
+        print("var_rows_list", var_rows_list)
         # get threads that operates these vars
         var_thr_list = get_threads(var_rows_list)
-        # print " var_thr_list ", var_thr_list
+        print(" var_thr_list ", var_thr_list)
         # Remove Duplicates
         var_thr_list = remove_dups(var_thr_list)
         b = {n: var_thr_list}
         threads_op_var.update(b)
-    # print threads_op_var
+    print("-------threads_op_var--------", threads_op_var)
 
     # Calculate the SUm of threads for each variables
     var_sum_thrs = map(lambda val: len(val), threads_op_var.values())
-    print(list(var_sum_thrs), len(list(var_sum_thrs)))
+    # print(list(var_sum_thrs), len(list(var_sum_thrs)))
     return threads_op_var
 
 

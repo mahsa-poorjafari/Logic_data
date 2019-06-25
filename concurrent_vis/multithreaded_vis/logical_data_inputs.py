@@ -48,5 +48,5 @@ def get_data_types():
             var_names = map(lambda var: var[0] if var[2] == t else None, csv_reader)
             var_names_not_none = filter(partial(is_not, None), var_names)
             data_types_vars.update({t: list(var_names_not_none)})
-        print("data_types_vars=> ", data_types_vars)
+        # print("data_types_vars=> ", data_types_vars)
     return data_types_vars

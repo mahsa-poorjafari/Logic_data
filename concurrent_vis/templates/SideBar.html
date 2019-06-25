@@ -1,54 +1,38 @@
-<!-- Sidebar  -->
-<nav id="sidebar">
-    <div class="sidebar-header">
-        <h3>Further Info</h3>
-        <strong>BS</strong>
-    </div>
+<div class="wrapper content col-md-2" style="overflow-wrap: break-word;">
+    <!-- Sidebar  -->
+    <nav id="sidebar">
+        <div class="sidebar-header">
+            <h3>Further Info</h3>
+            <strong>FI</strong>
+        </div>
 
-    <ul class="list-unstyled components">
-        <li class="active">
-            <a href="#shared_variables" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
-                <i class="fas fa-home"></i>
-                Shared Variables
-            </a>
-            <ul class="collapse list-unstyled" id="shared_variables">
-                {% for k,v in shared_variables.items %}
-                    <lo>{{k}}</lo>
-                        <ol id="{{k}}_child">
-                            {% for i in v %}
-                                <li>{{i}}</li>
-                            {% endfor %}
-                        </ol>
-                {% endfor %}
-                <li>
-                    <a href="#">Home 1</a>
-                </li>
-                <li>
-                    <a href="#">Home 2</a>
-                </li>
-                <li>
-                    <a href="#">Home 3</a>
-                </li>
-            </ul>
-        </li>
-        <li>
-            <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
-                <i class="fas fa-briefcase"></i>
-                Threads
-            </a>
+        <ul class="list-unstyled components">
+            <li class="active">
+                <a href="#shared_variables" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                    <i class="fas fa-memory"></i>
+                    Shared Variables
+                    <span>( {{ shared_variables|length }} )</span>
+                </a>
+                <ul class="collapse list-unstyled" id="shared_variables">
+                    {% for v in shared_variables %}
+                        <li>{{v}}</li>
+                    {% endfor %}
+                </ul>
+            </li>
+            <li>
+                <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                    <i class="fas fa-dice-d20"></i>
+                    Threads
+                    <span>( {{ thread_ids|length }} )</span>
+                </a>
 
-            <ul class="collapse list-unstyled" id="pageSubmenu">
-                <li>
-                    <a href="#">Page 1</a>
-                </li>
-                <li>
-                    <a href="#">Page 2</a>
-                </li>
-                <li>
-                    <a href="#">Page 3</a>
-                </li>
-            </ul>
-        </li>
-    </ul>
+                <ul class="collapse list-unstyled" id="pageSubmenu">
+                    {% for t in thread_ids %}
+                        <li>{{ t }}</li>
+                    {% endfor %}
+                </ul>
+            </li>
+        </ul>
 
-</nav>
+    </nav>
+</div>

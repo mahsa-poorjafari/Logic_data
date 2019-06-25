@@ -1,32 +1,3 @@
-let nodeList = [];
-let edgeList = [];
-
-let structList = document.getElementById('shared_struct').getElementsByTagName("li");
-console.log(structList);
-for (let i = 0; i < structList.length; i++) {
-  let structName = structList[i].innerHTML;
-  let structId = structName + "_child";
-  let structChildList = document.getElementById(structId).getElementsByTagName("lo");
-  console.log(structChildList);
-  let xp = 200;
-  let yp = 175;
-  let sP = {data: {id: structName, type: 'round-rectangle'}, position: { x: xp+100, y: yp+200 } };
-  nodeList.push(sP);
-  for (let j = 0; j < structChildList.length; j++) {
-    let strcutChild = structChildList[j].innerHTML;
-    let sCh = {data: {id: strcutChild, type: 'ellipse'}};
-    nodeList.push(sCh);
-    let edgeId = 'ch'+j+'_p'+i ;
-    let e = {data: {id: edgeId, source: strcutChild, target: structName}};
-    edgeList.push(e);
-  }
-}
-let varList = document.getElementById('shared_variables').getElementsByTagName("li");
-for (let i = 0; i < varList.length; i++) {
-  let a = {"data": {"id": varList[i].innerHTML, type: 'ellipse'}};
-  nodeList.push(a);
-}
-
 let cy = window.cy = cytoscape({
   container: document.getElementById('cy'),
 

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+{% load bootstrap4 %}
+{% load staticfiles %}
+<html lang="en">
+<head>
+    <script type="text/javascript">
+        mxBasePath = "{% static '' %}";
+    </script>
+    {# Load CSS and JavaScript #}
+    {% bootstrap_css %}
+    {% bootstrap_javascript jquery='full' %}
+    {# Display django.contrib.messages as Bootstrap alerts #}
+    {% bootstrap_messages %}
+    <script type="text/javascript" src="{% static 'js/mxClient.js' %}"></script>
+    <link href="{% static 'css/global.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="{% static 'js/global.js'%} "></script>
+    <script src="https://kit.fontawesome.com/9ac136c88a.js"></script>
+    <script src="{% static 'js/jquery_actions.js'%} " type="text/javascript"></script>
+    <meta charset="UTF-8">
+    <title>Logical Data with mxGraph</title>
+</head>
+<body>
+    {% include "main_menu.html" %}
+    <div class="wrapper content col-md-2" style="overflow-wrap: break-word;">
+        <!-- Sidebar  -->
+        <nav id="sidebar">
+            <div class="sidebar-header">
+                <h3>Further Info</h3>
+                <strong>FI</strong>
+            </div>
+
+            <ul class="list-unstyled components">
+                <li class="active">
+                    <a href="#shared_variables" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                        <i class="fas fa-memory"></i>
+                        Shared Variables
+                    </a>
+                    <ul class="collapse list-unstyled" id="shared_variables">
+                        {% for k,v in shared_variables.items %}
+                        <p>
+                            <a href="#{{k}}_child" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                                <i class="fas fa-home"></i>
+                                <span>{{k}}</span>
+                                <!-- <span>( {{ v|length }} )</span> -->
+                            </a>
+                            <ol class="collapse list-unstyled shared_struct" id="{{k}}_child">
+                                {% for i in v %}
+                                    <li>{{i}}</li>
+                                {% endfor %}
+                            </ol>
+                        </p>
+                        {% endfor %}
+                    </ul>
+                </li>
+                <li>
+                    <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                        <i class="fas fa-dice-d20"></i>
+                        Threads
+                        <span>( {{ thread_ids|length }} )</span>
+                    </a>
+
+                    <ul class="collapse list-unstyled" id="pageSubmenu">
+                        {% for t in thread_ids %}
+                            <li>{{ t }}</li>
+                        {% endfor %}
+                    </ul>
+                </li>
+            </ul>
+
+        </nav>
+    </div>
+    <div class="content col-md-10" style="min-height: 500px;">
+        <h3>Technical Data</h3>
+        <div class="tabs">
+          <div class="tab-button-outer">
+            <ul id="tab-button">
+              <li><a href="#tab01">Diagram</a></li>
+              <li><a href="#tab02">Textual</a></li>
+            </ul>
+          </div>
+            <div class="tab-select-outer">
+                <select id="tab-select">
+                    <option value="#tab01">Diagram</option>
+                    <option value="#tab02">Textual</option>
+                </select>
+            </div>
+        </div>
+        <div id="tab01" class="tab-contents">
+            <div class="col-md-12 well diagram_container" id="logical_data_l0_diagram"></div>
+        </div>
+        <div id="tab02" class="tab-contents">
+            <div class="col-md-12 well textual_container" id="var_struct_textual">
+                <ul class="shared_struct">
+                    {% for sK, sV in shared_struct.items %}
+                        <li>
+                            <span>{{ sK }}</span>
+                            <ul class="thr_op">
+                                {% for v in sV %}
+                                    <lo>{{ v }}, </lo>
+                                {% endfor %}
+                            </ul>
+                        </li>
+
+                    {% endfor %}
+                </ul>
+
+            </div>
+        </div>
+
+    </div>
+
+
+</body>
+<script src="{% static 'js/LD_L0.js' %}" type="text/javascript"></script>
+
+
+</html>
