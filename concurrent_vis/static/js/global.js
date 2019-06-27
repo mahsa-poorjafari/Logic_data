@@ -41,7 +41,7 @@ function threadStyle(graph, threadId) {
     style[mxConstants.STYLE_FONTCOLOR] = '#000000';
     style[mxConstants.STYLE_STROKECOLOR] = '#000000';
     style[mxConstants.STYLE_ALIGN] = mxConstants.ALIGN_CENTER;
-    style[mxConstants.STYLE_IMAGE] = '/static/media/TechComp.png';
+    style[mxConstants.STYLE_IMAGE] = '/static/media/'+ threadId + '.png';
     graph.getStylesheet().putCellStyle(threadId, style);
 };
 function sharedVarStyle(graph, varId) {
@@ -126,9 +126,22 @@ for (let i = 0; i < structList.length; i++) {
         }
     }
 }
-// let varList = document.getElementById('shared_variables').getElementsByTagName("li");
-// for (let i = 0; i < varList.length; i++) {
-//   let a = {"data": {"id": varList[i].innerHTML, type: 'ellipse'}};
-//   nodeList.push(a);
-// }
 
+function addThreadNodes(graph, parent, threadList, tW, tH) {
+    console.table("addThreadNodes=>  " + threadList);
+    let thrNode = null;
+    for (let i = 0 ; i < threadList.length; i++){
+        let thrId = 'thr' + i;
+        let thrText = threadList[i].getElementsByTagName("span")[0].innerHTML;
+        if (thrText.includes("_")){
+            thrText = thrText.replace(/_/g, "\n");
+            threadStyle(graph, "mainThread");
+            thrNode = graph.insertVertex(parent, thrId, thrText, tW, tH, 120, 80, 'mainThread');
+            tW += 150;
+        }else {
+            threadStyle(graph, "thread");
+            thrNode = graph.insertVertex(parent, thrId, thrText, tW, tH, 120, 80, 'thread');
+            tW += 150;
+        }
+    }
+}

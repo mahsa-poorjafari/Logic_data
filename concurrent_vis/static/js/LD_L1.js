@@ -28,7 +28,7 @@ function main(container) {
         try {
             let varH = 500;
             let varW = 20;
-            let stW = 20;
+            let stW = 50;
             let stH = 100;
 
             logicalDataStyle(graph, 'logicalData');
@@ -41,7 +41,7 @@ function main(container) {
             for (let i = 0; i < structList.length; i++) {
                 if (i !== 0 && ((i / 5) % 1) === 0) {
                     stH += 100;
-                    stW = 1000;
+                    stW = 400;
                 }
 
                 let stText = structList[i].getElementsByTagName("span")[0].innerHTML;
@@ -53,24 +53,32 @@ function main(container) {
                     // console.log(stText +" - "+ stId);
                     stNode = graph.insertVertex(parent, stId, stText, stW, stH, 120, 80, 'logicalData');
                     //console.log(stNode);
-                    stW += 150;
+                    stW += 200;
+                    varW = stW - 190;
+                }else{
+                    varW = 20;
                 }
+                //stW = 20;
 
                 // console.table(stVarList);
-                // console.table(stNode);
+
+
+                console.log(stW + " - "+ varW);
                 let stVarList = structList[i].getElementsByTagName("lo");
                 for (let j = 0; j < stVarList.length; j++) {
                     let varText = stVarList[j].innerHTML;
                     let varId = 'var_' + j;
 
                     let varNode = graph.insertVertex(parent, varId, varText, varW, varH, 120, 80, 'variable');
-                    let e = graph.insertEdge(parent, null, null, varNode,stNode, 'dashed=0;' +
-                        'endArrow=diamond;sourcePerimeterSpacing=0;startFill=0;endFill=1;');
+                    if (stText != "variables") {
+                        graph.insertEdge(parent, null, null, varNode, stNode, 'dashed=0;' +
+                            'endArrow=diamond;sourcePerimeterSpacing=0;startFill=0;endFill=1;');
+                    }
 
                     // varH += 100;
                     varW += 150;
                 }
-                varW = 20;
+                // varW = 20;
                 varH += 100;
             }
             // console.table( graph.getChildVertices(graph.getDefaultParent()));

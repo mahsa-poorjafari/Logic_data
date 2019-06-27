@@ -43,14 +43,42 @@ def get_var_struct(shared_vars):
     return struct_vars_groups
 
 
-def get_threads():
+def get_first_function(t):
+    # print("=========>", t)
     with open('multithreaded_vis/PowerWindowRosace.txt') as csv_file:
         csv_file.seek(0, 0)
         csv_reader = csv.reader(csv_file, delimiter=',')
+        thread_functioncall_filter = filter(lambda row: row[2] == "FUNCTIONCALL" and row[1] == t, csv_reader)
+        thread_functioncall_list = list(thread_functioncall_filter)
+
+        # print(t, "=>", thread_functioncall_list[0])
+        return 1
+
+
+def get_records():
+    with open('multithreaded_vis/PowerWindowRosace.txt') as csv_file:
+        csv_reader = csv.reader(csv_file, delimiter=',')
+    print("csv_reader=>  ", type(csv_reader))
+    return csv_reader
+
+
+def get_threads():
+    # get_records()
+    with open('multithreaded_vis/PowerWindowRosace.txt') as csv_file:
+        csv_reader = csv.reader(csv_file, delimiter=',')
+        main_thread_filter = filter(lambda row: row[2] == "FUNCTIONCALL" and row[3] == "main", csv_reader)
+        main_thread_list = list(main_thread_filter)
+        main_thread_id = main_thread_list[0][1]
+        # print("main_thread_id =>  ", main_thread_id)
+
+        csv_file.seek(0, 0)
         thread_ids = map(lambda var: var[1], csv_reader)
         thr_dict = dict.fromkeys(list(thread_ids))
         thread_list = list(thr_dict)
-        return thread_list
+        threads = ['Main_' + item if item == main_thread_id else item for item in thread_list]
+        # threads = {"threads": thread_list, "Main": main_thread_id}
+        # print(threads)
+        return threads
 
 
 def thread_per_vars(shared_variables, thread_ids):
@@ -91,7 +119,7 @@ def logical_data(request):
     fun_names = get_function_names()
     # print(fun_names)
 
-    return render(request, 'Logical_data.html', {'shared_variables': shared_group,
+    return render(request, 'Logical_data.html', {'shared_variables': shared_variables,
                                                  'shared_struct': struct_vars_groups,
                                                  'function_names': fun_names})
 
@@ -110,10 +138,19 @@ def logical_data_l0(request):
 
 
 def logical_comp(request):
-    thread_list = tech_comp()
-    # print(thread_list['timestamp'])
-    return render(request, 'logical_component.html', {'timestamp': thread_list['timestamp'],
-                                                      'thread_ids': thread_list['thread_ids']})
+    thread_list = get_threads()
+
+    for t in thread_list:
+        # print("Main_" in t)
+        if "Main_" in t:
+            b = t.split('_')
+            # print("t=> ", t)
+            thr_func_list = get_first_function(b[1])
+        else:
+            thr_func_list = get_first_function(t)
+        # print("thr_func_list => ", thr_func_list)
+
+    return render(request, 'logical_component.html', {'threads': thread_list})
 
 
 def logical_data_l1(request):

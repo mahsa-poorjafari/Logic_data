@@ -47,14 +47,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 // console.log(varList.length);
                 let varThrList = document.getElementById("sidebar").getElementsByClassName("threads");
                 let thrList = varThrList[0].getElementsByTagName("li");
-                for (let j = 0; j < thrList.length; j++) {
-                    let thrId = 'thr'+j;
-                    threadStyle(graph, thrId);
-                    let thread = thrList[j].innerHTML;
-                    graph.insertVertex(parent, thrId, thread, thrW, thrH, 150, 100, thrId);
-                    thrW += 200;
-                    thrH -= 20;
-                }
+                // for (let j = 0; j < thrList.length; j++) {
+                //     let thrId = 'thr'+j;
+                //
+                //     threadStyle(graph, "thread");
+                //     let thread = thrList[j].innerHTML;
+                //     graph.insertVertex(parent, thrId, thread, thrW, thrH, 150, 100, "thread");
+                //     thrW += 200;
+                //     thrH -= 20;
+                // }
+                addThreadNodes(graph, parent, thrList, 20, 100);
                 var thrCells = graph.getChildVertices(graph.getDefaultParent());
                 //console.table(thrCells);
 
@@ -74,8 +76,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     sharedVarStyle(graph, varId);
                     let varNode = graph.insertVertex(parent, varId, varText, varW, varH, 120, 100, varId);
 
-                    var threads = [];
-                    let oP = "";
+                    // var threads = [];
+                    // let oP = "";
                     for (let k = 0; k < varThrList.children.length ; k++){
                         let thrId = varThrList.children[k].getElementsByTagName("span")[0].innerHTML;
                         // let thrOp = varThrList.children[k].getElementsByClassName("thr_op")[0];
