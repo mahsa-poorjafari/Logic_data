@@ -47,16 +47,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 // console.log(varList.length);
                 let varThrList = document.getElementById("sidebar").getElementsByClassName("threads");
                 let thrList = varThrList[0].getElementsByTagName("li");
-                // for (let j = 0; j < thrList.length; j++) {
-                //     let thrId = 'thr'+j;
-                //
-                //     threadStyle(graph, "thread");
-                //     let thread = thrList[j].innerHTML;
-                //     graph.insertVertex(parent, thrId, thread, thrW, thrH, 150, 100, "thread");
-                //     thrW += 200;
-                //     thrH -= 20;
-                // }
-                addThreadNodes(graph, parent, thrList, 20, 100);
+                for (let j = 0; j < thrList.length; j++) {
+                    let thrId = 'thr'+j;
+
+                    threadStyle(graph, "thread");
+                    let thread = thrList[j].innerHTML;
+                    graph.insertVertex(parent, thrId, thread, thrW, thrH, 150, 100, "thread");
+                    thrW += 200;
+                    thrH -= 20;
+                }
+                //  addThreadNodes(graph, parent, thrList, 20, 100);
                 var thrCells = graph.getChildVertices(graph.getDefaultParent());
                 //console.table(thrCells);
 

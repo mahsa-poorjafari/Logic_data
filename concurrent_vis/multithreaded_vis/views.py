@@ -43,16 +43,28 @@ def get_var_struct(shared_vars):
     return struct_vars_groups
 
 
-def get_first_function(t):
-    # print("=========>", t)
+def get_first_function(t, indx):
+
+    print("=========>", t, " - ", indx)
     with open('multithreaded_vis/PowerWindowRosace.txt') as csv_file:
         csv_file.seek(0, 0)
         csv_reader = csv.reader(csv_file, delimiter=',')
-        thread_functioncall_filter = filter(lambda row: row[2] == "FUNCTIONCALL" and row[1] == t, csv_reader)
-        thread_functioncall_list = list(thread_functioncall_filter)
+        if "Main_" in t:
+            b = t.split('_')
+            thread_functioncall_filter = filter(lambda row: row[2] == "FUNCTIONCALL" and row[1] == b[1]
+                                                , csv_reader)
+            thread_functioncall_list = list(thread_functioncall_filter)[1]
+            thread_function = {b[1]: thread_functioncall_list[3]}
 
-        # print(t, "=>", thread_functioncall_list[0])
-        return 1
+        else:
+            thread_functioncall_filter = filter(lambda row: row[2] == "FUNCTIONCALL" and row[1] == t
+                                                and (row[5] == "CONSTANT;LOCAL;" or row[5] == "LOCAL;CONSTANT;"),
+                                                csv_reader)
+            thread_functioncall_list = list(thread_functioncall_filter)[indx-1]
+
+            thread_function= {t: thread_functioncall_list[3]}
+        print(t, "=>  ", thread_function)
+        return thread_function
 
 
 def get_records():
@@ -139,18 +151,22 @@ def logical_data_l0(request):
 
 def logical_comp(request):
     thread_list = get_threads()
+    thr_func_dict = {}
 
-    for t in thread_list:
+    for indx, t in enumerate(thread_list):
+        thr_func = get_first_function(t, indx)
+        thr_func_dict.update(thr_func)
         # print("Main_" in t)
-        if "Main_" in t:
-            b = t.split('_')
+        # if "Main_" in t:
+          #  b = t.split('_')
             # print("t=> ", t)
-            thr_func_list = get_first_function(b[1])
-        else:
-            thr_func_list = get_first_function(t)
-        # print("thr_func_list => ", thr_func_list)
+           # thr_func_list = get_first_function(b[1])
+        # else:
+          #  thr_func_list = get_first_function(t)
+    print("thr_func_list => ", thr_func_dict)
 
-    return render(request, 'logical_component.html', {'threads': thread_list})
+    return render(request, 'logical_component.html', {'threads': thread_list,
+                                                      'thread_function': thr_func_dict})
 
 
 def logical_data_l1(request):
