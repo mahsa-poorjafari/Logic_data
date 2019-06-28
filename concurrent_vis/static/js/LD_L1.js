@@ -31,8 +31,6 @@ function main(container) {
             let stW = 50;
             let stH = 100;
 
-            logicalDataStyle(graph, 'logicalData');
-            sharedVarStyle(graph, 'variable');
             configEdgeStyle(graph, "#000000");
 
             let structList = document.getElementById("logical_data_l1_textual").getElementsByClassName("shared_struct")[0].getElementsByTagName("li");
@@ -51,6 +49,7 @@ function main(container) {
                 if (stText != "variables") {
                     let stId = 'st' + i;
                     // console.log(stText +" - "+ stId);
+                    nodeStyle(graph, 'logicalData');
                     stNode = graph.insertVertex(parent, stId, stText, stW, stH, 120, 80, 'logicalData');
                     //console.log(stNode);
                     stW += 200;
@@ -68,11 +67,11 @@ function main(container) {
                 for (let j = 0; j < stVarList.length; j++) {
                     let varText = stVarList[j].innerHTML;
                     let varId = 'var_' + j;
-
+                    nodeStyle(graph, 'variable');
                     let varNode = graph.insertVertex(parent, varId, varText, varW, varH, 120, 80, 'variable');
                     if (stText != "variables") {
                         graph.insertEdge(parent, null, null, varNode, stNode, 'dashed=0;' +
-                            'endArrow=diamond;sourcePerimeterSpacing=0;startFill=0;endFill=1;');
+                            'endArrow=diamondThin;sourcePerimeterSpacing=0;startFill=0;endFill=1;');
                     }
 
                     // varH += 100;

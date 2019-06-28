@@ -54,7 +54,7 @@ def get_first_function(t, indx):
             thread_functioncall_filter = filter(lambda row: row[2] == "FUNCTIONCALL" and row[1] == b[1]
                                                 , csv_reader)
             thread_functioncall_list = list(thread_functioncall_filter)[1]
-            thread_function = {b[1]: thread_functioncall_list[3]}
+            thread_function = {t: thread_functioncall_list[3]}
 
         else:
             thread_functioncall_filter = filter(lambda row: row[2] == "FUNCTIONCALL" and row[1] == t
@@ -152,17 +152,9 @@ def logical_data_l0(request):
 def logical_comp(request):
     thread_list = get_threads()
     thr_func_dict = {}
-
     for indx, t in enumerate(thread_list):
         thr_func = get_first_function(t, indx)
         thr_func_dict.update(thr_func)
-        # print("Main_" in t)
-        # if "Main_" in t:
-          #  b = t.split('_')
-            # print("t=> ", t)
-           # thr_func_list = get_first_function(b[1])
-        # else:
-          #  thr_func_list = get_first_function(t)
     print("thr_func_list => ", thr_func_dict)
 
     return render(request, 'logical_component.html', {'threads': thread_list,
@@ -176,3 +168,37 @@ def logical_data_l1(request):
     return render(request, 'logical_data_L1.html', {'shared_variables': shared_variables_names,
                                                     'thread_ids': threads,
                                                     'struct_vars': struct_vars_groups})
+
+
+def logical_data_l2(request):
+    shared_variables_names = get_shared_var_names()
+    threads = get_threads()
+    thread_var_op = {}
+
+    with open('multithreaded_vis/PowerWindowRosace.txt') as csv_file:
+        csv_reader = csv.reader(csv_file, delimiter=',')
+        for t in threads:
+
+            # thr = t.split("_")[1] if "Main_" in t else t
+            # print(thr)
+            if "Main_" not in t:
+                thread_vars_filter = filter(lambda row: row[1] == t and row[2] in ["LOAD", "STORE"], csv_reader)
+                # csv_file.seek(0, 0)
+                thread_vars_filter = map(lambda row: [row[3], row[0], row[1], row[2]] if row[3] != '' else None,
+                                         thread_vars_filter)
+
+                thread_var_not_none = filter(partial(is_not, None), thread_vars_filter)
+                thread_var_list = list(thread_var_not_none)
+                thread_var_op.update({t: thread_var_list})
+            csv_file.seek(0, 0)
+        # print("thread_var_list", thread_var_op)
+        var_order = list()
+        for k, v in thread_var_op.items():
+            for var in v:
+                if v[0] not in var_order:
+                    var_order.append(v[0])
+
+
+
+    return render(request, 'logical_data_L2.html', {'shared_variables': shared_variables_names,
+                                                    'thread_ids': threads})

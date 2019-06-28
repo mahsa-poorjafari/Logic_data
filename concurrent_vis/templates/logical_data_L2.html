@@ -1,14 +1,15 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
 {% block content %}
-    {% with thread_ids=threads %}
-    {% with shared_variables="" %}
+
+    {% with thread_ids=thread_ids %}
+    {% with shared_variables=shared_variables %}
         {% include 'SideBar.html' %}
     {% endwith %}
     {% endwith %}
-    <div class="col-md-10">
-        <h3>Logical Component Sub Views</h3>
 
+    <div class="col-md-10">
+        <h3>Logical Data Level 0 - Technical Data</h3>
         <div class="tabs">
           <div class="tab-button-outer">
             <ul id="tab-button">
@@ -26,16 +27,18 @@
 
 
         <div id="tab01" class="tab-contents">
-            <div class="col-md-12 well diagram_container" id="logical_comp_diagram"></div>
+            <div class="col-md-12 well diagram_container" id="logical_data_l2_diagram"></div>
         </div>
         <div id="tab02" class="tab-contents">
-            <div class="col-md-12 well textual_container" id="logical_comp_textual">
-                <ul class="threads">
-                    {% for t, f in thread_function.items %}
+            <div class="col-md-12 well textual_container" id="logical_data_l2_textual">
+                <ul class="shared_struct">
+                    {% for sK, sV in struct_vars.items %}
                         <li>
-                            <span>{{ t }}</span>
+                            <span>{{ sK }}</span>
                             <ul class="thr_op">
-                                <lo>{{ f }} </lo>
+                                {% for v in sV %}
+                                    <lo>{{ v }} </lo>
+                                {% endfor %}
                             </ul>
                         </li>
 
@@ -45,5 +48,4 @@
         </div>
      </div>
 
-    <script src="{% static 'js/LComp_L0.js' %}" type="text/javascript"></script>
 {% endblock %}

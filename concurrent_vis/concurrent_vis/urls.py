@@ -28,7 +28,8 @@ urlpatterns = [
     url(r'no_canvas', tests.no_canvas, name='no_canvas'),
     url(r'gojs', tests.gojs, name='gojs'),
     url(r'mxGraph', tests.mxgraph, name='mxGraph'),
-    url(r'Logical_Data_L0', views.logical_data_l0, name='ld_mxgraph'),
+    url(r'Logical_Data_L0', views.logical_data_l0, name='logical_data_L0'),
     url(r'catastrophe', views.catastrophe, name='catastrophe'),
-    url(r'Logical_Data_L1', views.logical_data_l1, name='Logical_Data_L0'),
+    url(r'Logical_Data_L1', views.logical_data_l1, name='Logical_Data_L1'),
+    url(r'Logical_Data_L2', views.logical_data_l2, name='Logical_Data_L2'),
 ]

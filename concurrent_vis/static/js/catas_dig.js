@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function() {
             //graph.setEnabled(false);
 
 
-            graph.getStylesheet().getDefaultEdgeStyle()['edgeStyle'] = 'topToBottomEdgeStyle';
+            // graph.getStylesheet().getDefaultEdgeStyle()['edgeStyle'] = 'topToBottomEdgeStyle';
             graph.htmlLabels = true;
             graph.vertexLabelsMovable = true;
 
@@ -35,13 +35,12 @@ document.addEventListener('DOMContentLoaded', function() {
             graph.getModel().beginUpdate();
             try
             {
-                let varH = 250;
+                let varH = 50;
                 let varW = 10;
                 let thrW = 20;
-                let thrH = 100;
-                let edgeColor = "#B22222";
+                let thrH = 700;
+                let edgeColor = "#ccc";
                 configEdgeStyle(graph, edgeColor);
-
 
                 let varList = document.getElementById('var_list').getElementsByClassName('set_var_id');
                 // console.log(varList.length);
@@ -50,59 +49,66 @@ document.addEventListener('DOMContentLoaded', function() {
                 for (let j = 0; j < thrList.length; j++) {
                     let thrId = 'thr'+j;
 
-                    threadStyle(graph, "thread");
+                    nodeStyle(graph, "thread");
                     let thread = thrList[j].innerHTML;
                     graph.insertVertex(parent, thrId, thread, thrW, thrH, 150, 100, "thread");
                     thrW += 200;
-                    thrH -= 20;
+                    //thrH -= 50;
                 }
                 //  addThreadNodes(graph, parent, thrList, 20, 100);
-                var thrCells = graph.getChildVertices(graph.getDefaultParent());
+                let thrCells = graph.getChildVertices(graph.getDefaultParent());
                 //console.table(thrCells);
 
                 // graph.insertVertex(parent, null, "get Elements By Tag Name getElements ByTagName", varW, varH, 120, 100, "val_10");
 
                 for (let i = 0; i < varList.length; i++) {
-                    //console.log("varList.length => " + varList.length);
-                    if (i !== 0 && ((i/8)% 1) === 0){
-                        varH += 100;
-                        varW = 20;
-                    }
-                    let varId = 'val_' + i;
-
                     let varText = varList[i].getElementsByTagName("span")[0].innerHTML;
+                    // console.log("i => " + (i == 0 || i < varList.length/2));
+                    if (i == 0){
+                        varH = 50;
+                        varW = 10;
+                    }
+                    else if (i !== 0 && i < varList.length/2){
+                        varW +=150;
+                        let varH_cal = thrH - (60 * i);
+                        varH = thrH < (60 * i) ? varH_cal * -1 : varH_cal;
+                        if (((i/8)% 1) === 0){
+                            varH -= 100;
+                            varW = 10;
+                        }
+                        console.log(varText + " - "+ varH);
+                    }else{
+                        //varH += 400;
+                        varW +=150;
+                        varH = thrH + (20 * i);
+                        if (((i/8)% 1) === 0){
+                            varH += 100;
+                            varW = 10;
+                        }
+                    }
+                    // if (i !== 0 && ((i/8)% 1) === 0){
+                    //     varH += 100;
+                    //     varW = 20;
+                    // }
+                    let varId = 'val_' + i;
+                    //varW +=150;
+                    //varH += 10;
+
                     let varThrList = varList[i].getElementsByTagName("ol")[0];
 
-                    sharedVarStyle(graph, varId);
-                    let varNode = graph.insertVertex(parent, varId, varText, varW, varH, 120, 100, varId);
+                    nodeStyle(graph, "variable");
+                    let varNode = graph.insertVertex(parent, varId, varText, varW, varH, 120, 100, "variable");
 
-                    // var threads = [];
-                    // let oP = "";
-                    for (let k = 0; k < varThrList.children.length ; k++){
-                        let thrId = varThrList.children[k].getElementsByTagName("span")[0].innerHTML;
-                        // let thrOp = varThrList.children[k].getElementsByClassName("thr_op")[0];
-                        //
-                        // if (thrOp.children[0] != undefined){
-                        //     threads.push(thrId);
-                        //     oP = thrOp.children[0].innerHTML + ", " + thrOp.children[1].innerHTML;
-                        //     // console.log(oP);
-                        // }
 
-                        //threads.push(varThrList.children[k].getElementsByTagName("span")[0].innerHTML);
-                    }
-                    let edgeId = null;
-                    // console.table(varNode);
-                    // console.log("threads.length=> "+ threads);
                     thrCells.forEach(function (t) {
                         // console.log(t);
-                        graph.insertEdge(parent, edgeId, null, t, varNode, 'dashed=0;'+
+                        graph.insertEdge(parent, null, null, t, varNode, 'dashed=0;'+
                              'endArrow=open;startFill=0;endFill=0;' +
                              'endSize=8;');
                     });
-
+                    //varW +=150;
+                    //varH += 10;
                     thrW += 200;
-                    varW +=150;
-                    varH += 10;
                 }
                 // console.table(graph.getStylesheet().getDefaultVertexStyle());
             }

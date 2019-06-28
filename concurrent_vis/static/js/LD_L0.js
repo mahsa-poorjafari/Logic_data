@@ -44,15 +44,13 @@ function main(container){
             let dtW = 300;
             let dtH = 1000;
 
-            dataTypeStyle(graph, 'dataType');
-            sharedVarStyle(graph, 'variable');
-
             let dataTypes = document.getElementById('shared_variables').getElementsByTagName("span");
             for (let i = 0; i < dataTypes.length; i++) {
                 varW = 20;
                 varH += 50;
                 let dtId = 'dT'+i;
                 let dtText = dataTypes[i].innerHTML;
+                nodeStyle(graph, 'dataType');
                 let dt = graph.insertVertex(parent, dtId, dtText, dtW, dtH, 100, 80, 'dataType');
 
                 let dtVarList = document.getElementById(dtText+'_child').getElementsByTagName("li");
@@ -65,9 +63,10 @@ function main(container){
                     // sharedVarStyle(graph, varId);
                     // Specify edges for each data type
                     let edgeColor = (i==0)? '#B22222' : '#0000CD';
+                    nodeStyle(graph, 'variable');
+                    let v = graph.insertVertex(parent, varId, dtVarList[j].innerHTML, varW, varH, 100, 50, 'variable');
                     // console.log(i);
                     configEdgeStyle(graph, edgeColor);
-                    let v = graph.insertVertex(parent, varId, dtVarList[j].innerHTML, varW, varH, 100, 50, 'variable');
                     graph.insertEdge(parent, null, '', v, dt, 'dashed=0;'+
                     'endArrow=block;sourcePerimeterSpacing=0;startFill=0;endFill=0;strokeColor='+edgeColor);
                     varW +=150;

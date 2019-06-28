@@ -29,26 +29,37 @@ function main(container) {
         try {
 
             let threadList = document.getElementById("logical_comp_textual").getElementsByClassName("threads")[0].getElementsByTagName("li");
-            // let mainThread = threadList[0].getElementsByTagName("span")[0].innerHTML;
-            // let tW = 50;
-            // let tH = 100;
-            // let thrNode = null;
-            addThreadNodes(graph, parent, threadList, 50, 100);
-            console.table( graph.getChildVertices(graph.getDefaultParent()));
-            // for (let i = 0 ; i < threadList.length; i++){
-            //     let thrId = 'thr' + i;
-            //     let thrText = threadList[i].getElementsByTagName("span")[0].innerHTML;
-            //     if (thrText.includes("_")){
-            //         thrText = thrText.replace(/_/g, "\n");
-            //         threadStyle(graph, "mainThread");
-            //         thrNode = graph.insertVertex(parent, thrId, thrText, tW, tH, 120, 80, 'mainThread');
-            //         tW += 150;
-            //     }else {
-            //         threadStyle(graph, "thread");
-            //         thrNode = graph.insertVertex(parent, thrId, thrText, tW, tH, 120, 80, 'thread');
-            //         tW += 150;
-            //     }
-            // }
+            nodeStyle(graph, 'LogicalComp');
+            configEdgeStyle(graph, "#000000");
+            let fW = 50;
+            let fH = 100;
+            let tW = 20;
+            let tH = 300;
+            let thrNode = null;
+            // addThreadNodes(graph, parent, threadList, 20, 300);
+            // var thrCells = graph.getChildVertices(graph.getDefaultParent());
+            // console.table( graph.getChildVertices(graph.getDefaultParent()));
+            for (let i=0; i<threadList.length; i++){
+                let thrId = 'thr' + i;
+                let thrText = threadList[i].getElementsByTagName("span")[0].innerHTML;
+                if (thrText.includes("_")){
+                    thrText = thrText.replace(/_/g, "\n");
+                    nodeStyle(graph, "mainThread");
+                    thrNode = graph.insertVertex(parent, thrId, thrText, tW, tH, 120, 80, 'mainThread');
+                    tW += 150;
+                }else {
+                    nodeStyle(graph, "thread");
+                    thrNode = graph.insertVertex(parent, thrId, thrText, tW, tH, 120, 80, 'thread');
+                    tW += 150;
+                }
+                let funcId = "func_" + i;
+                let thrFunc = threadList[i].getElementsByTagName('lo')[0].innerHTML;
+                let funcNode = graph.insertVertex(parent, funcId, thrFunc, fW, fH, 120, 80, 'LogicalComp');
+                fW += 150;
+                graph.insertEdge(parent, null, null, thrNode, funcNode, 'dashed=0;' +
+                            'endArrow=diamondThin;sourcePerimeterSpacing=0;startFill=0;endFill=0;');
+            }
+
         }
         finally {
             //console.table( graph.getChildVertices(graph.getDefaultParent()));
